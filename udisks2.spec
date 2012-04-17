@@ -6,7 +6,7 @@
 Summary:	Disk Management Service
 Name:		udisks2
 Version:	1.93.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
@@ -27,6 +27,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.92
 BuildRequires:	udev-glib-devel >= 147
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	systemd-units >= 38
 Requires:	udev-core >= 147
 Suggests:	acl
 Suggests:	cryptsetup-luks
