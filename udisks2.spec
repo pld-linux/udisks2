@@ -5,17 +5,17 @@
 #
 Summary:	Disk Management Service
 Name:		udisks2
-Version:	1.93.0
-Release:	2
+Version:	1.94.0
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
-# Source0-md5:	250db7570f3d18797ef2ad308c94ff0a
+# Source0-md5:	c2a3428227de0251ff9e204d17dd2130
 URL:		http://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	autoconf
 BuildRequires:	automake >= 1:1.9
 BuildRequires:	gettext-devel
-BuildRequires:	glib2-devel >= 1:2.31.13
+BuildRequires:	glib2-devel >= 1:2.32.0
 BuildRequires:	gnome-common
 BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gtk-doc >= 1.3
@@ -65,7 +65,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki udisks2
 License:	LGPL v2+
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.31.13
+Requires:	glib2-devel >= 1:2.32.0
 
 %description devel
 Header files for udisks2 library.
