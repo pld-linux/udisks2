@@ -24,7 +24,7 @@ BuildRequires:	libatasmart-devel >= 0.17
 BuildRequires:	libtool
 BuildRequires:	libxslt-progs
 BuildRequires:	pkgconfig
-BuildRequires:	polkit-devel >= 0.92
+BuildRequires:	polkit-devel >= 0.100
 BuildRequires:	udev-glib-devel >= 147
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	systemd-units >= 38
