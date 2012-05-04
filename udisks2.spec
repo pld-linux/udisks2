@@ -5,13 +5,14 @@
 #
 Summary:	Disk Management Service
 Name:		udisks2
-Version:	1.94.0
+Version:	1.96.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
-# Source0-md5:	c2a3428227de0251ff9e204d17dd2130
+# Source0-md5:	427a31f0d9056af79e44f0278844c8b9
 URL:		http://www.freedesktop.org/wiki/Software/udisks
+BuildRequires:	acl-devel
 BuildRequires:	autoconf
 BuildRequires:	automake >= 1:1.9
 BuildRequires:	gettext-devel
@@ -25,6 +26,7 @@ BuildRequires:	libtool
 BuildRequires:	libxslt-progs
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.100
+BuildRequires:	systemd-devel >= 44
 BuildRequires:	udev-glib-devel >= 147
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	systemd-units >= 38
@@ -151,7 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_prefix}/lib/udisks2/udisksd
 %attr(755,root,root) %{_sbindir}/umount.udisks2
 /etc/dbus-1/system.d/org.freedesktop.UDisks2.conf
-/lib/systemd/system/udisks2.service
+%{systemdunitdir}/udisks2.service
 /lib/udev/rules.d/80-udisks2.rules
 %{_datadir}/dbus-1/system-services/org.freedesktop.UDisks2.service
 %{_datadir}/polkit-1/actions/org.freedesktop.udisks2.policy
