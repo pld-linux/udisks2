@@ -11,10 +11,11 @@ License:	GPL v2+
 Group:		Libraries
 Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
 # Source0-md5:	51346a6cf9183bb7bf5771b7166dfac1
+Patch0:		automake-1.12.patch
 URL:		http://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
 BuildRequires:	autoconf
-BuildRequires:	automake >= 1:1.9
+BuildRequires:	automake >= 1:1.10
 BuildRequires:	gettext-devel
 BuildRequires:	glib2-devel >= 1:2.32.0
 BuildRequires:	gnome-common
@@ -113,6 +114,7 @@ Pakiet ten dostarcza bashowe uzupełnianie nazw dla udisks2.
 
 %prep
 %setup -q -n udisks-%{version}
+%patch0 -p1
 
 %build
 %{__intltoolize}
@@ -160,7 +162,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/udisksctl.1*
 %{_mandir}/man8/udisks.8*
 %{_mandir}/man8/udisksd.8*
-%attr(700,root,root) /var/lib/udisks2
+%attr(700,root,root) %dir /var/lib/udisks2
 
 %files libs
 %defattr(644,root,root,755)
