@@ -5,12 +5,12 @@
 #
 Summary:	Disk Management Service
 Name:		udisks2
-Version:	1.97.0
+Version:	1.98.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
-# Source0-md5:	8ae4ef908ab706789e0e2b33d8810877
+# Source0-md5:	51346a6cf9183bb7bf5771b7166dfac1
 URL:		http://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
 BuildRequires:	autoconf
