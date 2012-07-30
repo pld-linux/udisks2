@@ -5,12 +5,12 @@
 #
 Summary:	Disk Management Service
 Name:		udisks2
-Version:	1.98.0
-Release:	2
+Version:	1.99.0
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
-# Source0-md5:	51346a6cf9183bb7bf5771b7166dfac1
+# Source0-md5:	b42f1d36ad4606622a9989e166fbae20
 Patch0:		automake-1.12.patch
 URL:		http://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
@@ -151,6 +151,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS HACKING NEWS README
 %attr(755,root,root) %{_bindir}/udisksctl
+%dir %{_sysconfdir}/udisks2
 %dir %{_prefix}/lib/udisks2
 %attr(755,root,root) %{_prefix}/lib/udisks2/udisksd
 %attr(755,root,root) %{_sbindir}/umount.udisks2

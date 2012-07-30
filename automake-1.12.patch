@@ -1,10 +1,12 @@
-diff -uNr udisks-1.98.0.old/src/Makefile.am udisks-1.98.0/src/Makefile.am
---- udisks-1.98.0.old/src/Makefile.am	2012-04-30 20:52:46.000000000 +0200
-+++ udisks-1.98.0/src/Makefile.am	2012-06-10 18:56:12.420725755 +0200
-@@ -123,5 +123,5 @@
+diff -uNr udisks-1.99.0.old/src/Makefile.am udisks-1.99.0/src/Makefile.am
+--- udisks-1.99.0.old/src/Makefile.am	2012-06-26 20:12:58.000000000 +0200
++++ udisks-1.99.0/src/Makefile.am	2012-07-30 17:57:46.851596085 +0200
+@@ -123,6 +123,6 @@
  # ----------------------------------------------------------------------------------------------------
  
  install-data-local:
+-	-$(mkdir_p) $(DESTDIR)$(sysconfdir)/udisks2
 -	-$(mkdir_p) $(DESTDIR)$(localstatedir)/lib/udisks2
++	-$(MKDIR_P) $(DESTDIR)$(sysconfdir)/udisks2
 +	-$(MKDIR_P) $(DESTDIR)$(localstatedir)/lib/udisks2
  	-chmod 0700 $(DESTDIR)$(localstatedir)/lib/udisks2
