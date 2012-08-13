@@ -1,0 +1,55 @@
+--- udisks-1.99.0/configure.ac~	2012-07-10 13:57:31.000000000 +0200
++++ udisks-1.99.0/configure.ac	2012-08-13 13:01:49.864645029 +0200
+@@ -138,6 +138,13 @@
+ AC_SUBST(LIBSYSTEMD_LOGIN_CFLAGS)
+ AC_SUBST(LIBSYSTEMD_LOGIN_LIBS)
+ 
++PKG_CHECK_MODULES(LIBSYSTEMD_DAEMON,
++                  [libsystemd-daemon >= 44],
++                  have_libsystemd_daemon=yes,
++                  have_libsystemd_daemon=no)
++AC_SUBST(LIBSYSTEMD_DAEMON_CFLAGS)
++AC_SUBST(LIBSYSTEMD_DAEMON_LIBS)
++
+ # udevdir
+ AC_ARG_WITH([udevdir],
+             AS_HELP_STRING([--with-udevdir=DIR], [Directory for udev]),
+--- udisks-1.99.0/src/Makefile.am~	2012-08-13 12:56:38.778928525 +0200
++++ udisks-1.99.0/src/Makefile.am	2012-08-13 13:00:31.560260729 +0200
+@@ -88,6 +88,7 @@
+ 	$(POLKIT_GOBJECT_1_CFLAGS) 			\
+ 	$(ACL_CFLAGS)					\
+ 	$(LIBSYSTEMD_LOGIN_CFLAGS)			\
++	$(LIBSYSTEMD_DAEMON_CFLAGS)			\
+ 	$(NULL)
+ 
+ libudisks_daemon_la_LIBADD =				\
+@@ -98,6 +99,7 @@
+ 	$(POLKIT_GOBJECT_1_LIBS) 			\
+ 	$(ACL_LIBS)					\
+ 	$(LIBSYSTEMD_LOGIN_LIBS)			\
++	$(LIBSYSTEMD_DAEMON_LIBS)			\
+ 	$(top_builddir)/udisks/libudisks2.la		\
+ 	$(NULL)
+ 
+--- udisks-1.99.0/src/udisksdaemonutil.c~	2012-07-27 18:40:34.000000000 +0200
++++ udisks-1.99.0/src/udisksdaemonutil.c	2012-08-13 12:53:01.928371044 +0200
+@@ -43,6 +43,7 @@
+ 
+ #if defined(HAVE_LIBSYSTEMD_LOGIN)
+ #include <systemd/sd-login.h>
++#include <systemd/sd-daemon.h>
+ #endif
+ 
+ /**
+@@ -1021,6 +1021,10 @@
+   UDisksObject *drive_object = NULL;
+   UDisksDrive *drive = NULL;
+ 
++  /* if we don't booted systemd, assume it's always the same seat */
++  if (sd_booted() <= 0)
++    return TRUE;
++
+   if (UDISKS_IS_LINUX_BLOCK_OBJECT (object))
+     {
+       UDisksLinuxBlockObject *linux_block_object;

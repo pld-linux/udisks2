@@ -6,12 +6,13 @@
 Summary:	Disk Management Service
 Name:		udisks2
 Version:	1.99.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
 # Source0-md5:	b42f1d36ad4606622a9989e166fbae20
 Patch0:		automake-1.12.patch
+Patch1:		systemd_booted.patch
 URL:		http://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
 BuildRequires:	autoconf
@@ -115,6 +116,7 @@ Pakiet ten dostarcza bashowe uzupełnianie nazw dla udisks2.
 %prep
 %setup -q -n udisks-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__intltoolize}
