@@ -5,14 +5,13 @@
 #
 Summary:	Disk Management Service
 Name:		udisks2
-Version:	1.99.0
-Release:	2
+Version:	2.0.0
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
-# Source0-md5:	b42f1d36ad4606622a9989e166fbae20
+# Source0-md5:	79fb343fbec6ed6b9e76fbe828622d38
 Patch0:		automake-1.12.patch
-Patch1:		systemd_booted.patch
 URL:		http://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
 BuildRequires:	autoconf
@@ -29,7 +28,7 @@ BuildRequires:	libxslt-progs
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.100
 BuildRequires:	systemd-devel >= 44
-BuildRequires:	udev-glib-devel >= 147
+BuildRequires:	udev-glib-devel >= 165
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	systemd-units >= 38
 Requires:	udev-core >= 147
@@ -116,7 +115,6 @@ Pakiet ten dostarcza bashowe uzupełnianie nazw dla udisks2.
 %prep
 %setup -q -n udisks-%{version}
 %patch0 -p1
-%patch1 -p1
 
 %build
 %{__intltoolize}
@@ -194,4 +192,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n bash-completion-udisks2
 %defattr(644,root,root,755)
-/etc/bash_completion.d/udisksctl-bash-completion.sh
+%{_datadir}/bash-completion/completions/udisksctl
