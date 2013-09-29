@@ -4,17 +4,18 @@
 %bcond_without	static_libs	# don't build static libraries
 #
 Summary:	Disk Management Service
+Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
-Version:	2.1.0
+Version:	2.1.1
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
-# Source0-md5:	a8c806034f096a8b10dfae1c4a917d0c
+# Source0-md5:	80e03f312542b800cf3162254b202725
 Patch0:		automake-1.12.patch
 URL:		http://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.10
 BuildRequires:	gettext-devel
 BuildRequires:	glib2-devel >= 1:2.32.0
@@ -28,10 +29,12 @@ BuildRequires:	libxslt-progs
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.100
 BuildRequires:	systemd-devel >= 44
-BuildRequires:	udev-glib-devel >= 165
+BuildRequires:	udev-glib-devel >= 1:165
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	libatasmart >= 0.17
 Requires:	systemd-units >= 38
-Requires:	udev-core >= 147
+Requires:	udev-core >= 1:147
+Requires:	udev-glib >= 1:165
 Suggests:	acl
 Suggests:	cryptsetup-luks
 Suggests:	dosfstools
@@ -52,15 +55,25 @@ udisks provides a daemon, D-Bus API and command line tools for
 managing disks and storage devices. This package is for the udisks 2.x
 series.
 
+%description -l pl.UTF-8
+udisks dostarcza demona, API D-Bus oraz narzędzia linii poleceń do
+zarządzania dyskami i innymi urządzeniami przechowującymi dane. Ten
+pakiet jest przeznaczony dla udisks z serii 2.x.
+
 %package libs
 Summary:	udisks2 library
 Summary(pl.UTF-8):	Biblioteka udisks2
 License:	LGPL v2+
 Group:		Libraries
+Requires:	glib2 >= 1:2.32.0
 
 %description libs
 This package contains udisks2 library, which provides access to the
 udisks daemon.
+
+%description libs -l pl.UTF-8
+Ten pakiet zawiera bibliotekę udisks2, umożliwiającą dostęp do demona
+udisks.
 
 %package devel
 Summary:	Header files for udisks2 library
@@ -102,15 +115,17 @@ Dokumentacja API biblioteki udisks2.
 
 %package -n bash-completion-udisks2
 Summary:	bash-completion for udisks2
-Summary(pl.UTF-8):	bashowe uzupełnianie nazw dla udisks2
+Summary(pl.UTF-8):	Bashowe uzupełnianie parametrów dla udisks2
 Group:		Applications/Shells
-Requires:	bash-completion
+Requires:	%{name} = %{version}-%{release}
+Requires:	bash-completion >= 2
 
 %description -n bash-completion-udisks2
-This package provides bash-completion for udisks2.
+This package provides bash-completion for udisks2 (udisksctl command).
 
 %description -n bash-completion-udisks2 -l pl.UTF-8
-Pakiet ten dostarcza bashowe uzupełnianie nazw dla udisks2.
+Pakiet ten dostarcza bashowe uzupełnianie parametrów dla udisks2
+(polecenia udisksctl).
 
 %prep
 %setup -q -n udisks-%{version}
@@ -144,7 +159,7 @@ rm -rf $RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post libs -p /sbin/ldconfig
+%post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
 
 %files -f %{name}.lang
