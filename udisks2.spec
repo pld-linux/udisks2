@@ -119,6 +119,9 @@ Summary(pl.UTF-8):	Bashowe uzupełnianie parametrów dla udisks2
 Group:		Applications/Shells
 Requires:	%{name} = %{version}-%{release}
 Requires:	bash-completion >= 2
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description -n bash-completion-udisks2
 This package provides bash-completion for udisks2 (udisksctl command).
