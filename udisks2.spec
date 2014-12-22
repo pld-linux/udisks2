@@ -6,20 +6,19 @@
 Summary:	Disk Management Service
 Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
-Version:	2.1.3
+Version:	2.1.4
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
-# Source0-md5:	f2c793f839058371d1e93a654199438d
+# Source0-md5:	2a3c9206b8f672d007e035988e3c3386
 Patch0:		automake-1.12.patch
 URL:		http://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
-BuildRequires:	automake >= 1:1.10
+BuildRequires:	automake >= 1:1.11
 BuildRequires:	gettext-devel
-BuildRequires:	glib2-devel >= 1:2.32.0
-BuildRequires:	gnome-common
+BuildRequires:	glib2-devel >= 1:2.36.0
 BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gtk-doc >= 1.3
 BuildRequires:	intltool
@@ -27,12 +26,12 @@ BuildRequires:	libatasmart-devel >= 0.17
 BuildRequires:	libtool
 BuildRequires:	libxslt-progs
 BuildRequires:	pkgconfig
-BuildRequires:	polkit-devel >= 0.100
-BuildRequires:	systemd-devel >= 44
+BuildRequires:	polkit-devel >= 0.102
+BuildRequires:	systemd-devel >= 209
 BuildRequires:	udev-glib-devel >= 1:165
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libatasmart >= 0.17
-Requires:	systemd-units >= 38
+Requires:	systemd-units >= 209
 Requires:	udev-core >= 1:147
 Requires:	udev-glib >= 1:165
 Suggests:	acl
@@ -65,7 +64,7 @@ Summary:	udisks2 library
 Summary(pl.UTF-8):	Biblioteka udisks2
 License:	LGPL v2+
 Group:		Libraries
-Requires:	glib2 >= 1:2.32.0
+Requires:	glib2 >= 1:2.36.0
 
 %description libs
 This package contains udisks2 library, which provides access to the
@@ -81,7 +80,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki udisks2
 License:	LGPL v2+
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.32.0
+Requires:	glib2-devel >= 1:2.36.0
 
 %description devel
 Header files for udisks2 library.
@@ -181,6 +180,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/udisksctl.1*
 %{_mandir}/man8/udisks.8*
 %{_mandir}/man8/udisksd.8*
+%{_mandir}/man8/umount.udisks2.8*
 %attr(700,root,root) %dir /var/lib/udisks2
 
 %files libs
@@ -210,4 +210,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n bash-completion-udisks2
 %defattr(644,root,root,755)
-%{_datadir}/bash-completion/completions/udisksctl
+%{bash_compdir}/udisksctl
