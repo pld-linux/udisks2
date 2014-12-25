@@ -27,11 +27,11 @@ BuildRequires:	libtool
 BuildRequires:	libxslt-progs
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.102
-BuildRequires:	systemd-devel >= 209
+BuildRequires:	systemd-devel >= 1:209
 BuildRequires:	udev-glib-devel >= 1:165
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libatasmart >= 0.17
-Requires:	systemd-units >= 209
+Requires:	systemd-units >= 1:209
 Requires:	udev-core >= 1:147
 Requires:	udev-glib >= 1:165
 Suggests:	acl
