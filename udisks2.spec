@@ -17,7 +17,7 @@ URL:		http://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.11
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 BuildRequires:	glib2-devel >= 1:2.36.0
 BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gtk-doc >= 1.3
