@@ -7,7 +7,7 @@ Summary:	Disk Management Service
 Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
 Version:	2.1.6
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
@@ -172,8 +172,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS HACKING NEWS README
 %attr(755,root,root) %{_bindir}/udisksctl
 %dir %{_sysconfdir}/udisks2
-%dir %{_prefix}/lib/udisks2
-%attr(755,root,root) %{_prefix}/lib/udisks2/udisksd
+%dir %{_libexecdir}/udisks2
+%attr(755,root,root) %{_libexecdir}/udisks2/udisksd
 %attr(755,root,root) %{_sbindir}/umount.udisks2
 /etc/dbus-1/system.d/org.freedesktop.UDisks2.conf
 %{systemdunitdir}/udisks2.service
