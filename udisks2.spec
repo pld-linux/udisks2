@@ -6,14 +6,14 @@
 Summary:	Disk Management Service
 Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
-Version:	2.1.6
-Release:	3
+Version:	2.1.8
+Release:	1
 License:	GPL v2+
 Group:		Libraries
-Source0:	http://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
-# Source0-md5:	ea181c13c43af039fded88f0ef546e24
+Source0:	https://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
+# Source0-md5:	501d11c243bd8c6c00650474cd2afaab
 Patch0:		automake-1.12.patch
-URL:		http://www.freedesktop.org/wiki/Software/udisks
+URL:		https://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.11
@@ -27,7 +27,7 @@ BuildRequires:	libtool
 BuildRequires:	libxslt-progs
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.102
-BuildRequires:	systemd-devel >= 44
+BuildRequires:	systemd-devel >= 1:209
 BuildRequires:	udev-glib-devel >= 1:165
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libatasmart >= 0.17
