@@ -1,34 +1,47 @@
+# TODO:
+# - iscsi: libiscsi.h, libiscsi_init in libiscsi
+# - lsm: libstoragemgmt >= 1.3.0, libconfig >= 1.3.2
 #
 # Conditional build:
+%bcond_with	elogind		# elogind
+%bcond_with	iscsi		# iSCSI support
+%bcond_with	libstoragemgmt	# libstoragemgmt support
 %bcond_without	apidocs		# do not build and package API docs
 %bcond_without	static_libs	# don't build static libraries
 
 Summary:	Disk Management Service
 Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
-Version:	2.1.8
+Version:	2.8.4
 Release:	1
 License:	GPL v2+
 Group:		Libraries
-Source0:	https://udisks.freedesktop.org/releases/udisks-%{version}.tar.bz2
-# Source0-md5:	501d11c243bd8c6c00650474cd2afaab
+#Source0Download: https://github.com/storaged-project/udisks/releases
+Source0:	https://github.com/storaged-project/udisks/releases/download/udisks-%{version}/udisks-%{version}.tar.bz2
+# Source0-md5:	ee74a32fe2a7ab3dd3aa9e2283b844ea
 Patch0:		automake-1.12.patch
 URL:		https://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.11
-BuildRequires:	gettext-tools
-BuildRequires:	glib2-devel >= 1:2.36.0
+%{?with_elogind:BuildRequires:	elogind-devel >= 219}
+BuildRequires:	gettext-tools >= 0.19.8
+BuildRequires:	glib2-devel >= 1:2.50
 BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gtk-doc >= 1.3
-BuildRequires:	intltool
 BuildRequires:	libatasmart-devel >= 0.17
+# with btrfs,crypto,fs,kbd,loop,lvm2,mdraid,part,swap,vdo modules
+BuildRequires:	libblockdev-devel >= 2.19
+%{?with_libstoragemgmt:BuildRequires:	libconfig-devel >= 1.3.2}
+BuildRequires:	libmount-devel >= 2.30
+%{?with_libstoragemgmt:BuildRequires:	libstoragemgmt-devel >= 1.3.0}
 BuildRequires:	libtool
 BuildRequires:	libxslt-progs
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.102
-BuildRequires:	systemd-devel >= 1:209
+%{!?with_elogind:BuildRequires:	systemd-devel >= 1:209}
 BuildRequires:	udev-glib-devel >= 1:165
+%{?with_elogind:BuildConflicts:	systemd-devel}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libatasmart >= 0.17
 Requires:	systemd-units >= 44
@@ -64,7 +77,7 @@ Summary:	udisks2 library
 Summary(pl.UTF-8):	Biblioteka udisks2
 License:	LGPL v2+
 Group:		Libraries
-Requires:	glib2 >= 1:2.36.0
+Requires:	glib2 >= 1:2.50
 
 %description libs
 This package contains udisks2 library, which provides access to the
@@ -80,7 +93,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki udisks2
 License:	LGPL v2+
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.36.0
+Requires:	glib2-devel >= 1:2.50
 
 %description devel
 Header files for udisks2 library.
@@ -137,14 +150,14 @@ Pakiet ten dostarcza bashowe uzupełnianie parametrów dla udisks2
 %patch0 -p1
 
 %build
-%{__intltoolize}
 %{__libtoolize}
-%{__aclocal}
+%{__aclocal} -I m4
 %{__autoconf}
 %{__autoheader}
 %{__automake}
 %configure \
 	%{__enable_disable apidocs gtk-doc} \
+	--enable-available-modules \
 	%{__enable_disable static_libs static} \
 	--disable-silent-rules \
 	--with-html-dir=%{_gtkdocdir} \
@@ -158,6 +171,10 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/udisks2/modules/*.la
+%if %{with static_libs}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/udisks2/modules/*.a
+%endif
 
 %find_lang %{name}
 
@@ -169,18 +186,37 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS HACKING NEWS README
+%doc AUTHORS NEWS README.md
 %attr(755,root,root) %{_bindir}/udisksctl
-%dir %{_sysconfdir}/udisks2
+%attr(755,root,root) %{_sbindir}/umount.udisks2
 %dir %{_libexecdir}/udisks2
 %attr(755,root,root) %{_libexecdir}/udisks2/udisksd
-%attr(755,root,root) %{_sbindir}/umount.udisks2
-/etc/dbus-1/system.d/org.freedesktop.UDisks2.conf
-%{systemdunitdir}/udisks2.service
+%if "%{_libdir}" != "%{_libexecdir}"
+%dir %{_libdir}/udisks2
+%endif
+%dir %{_libdir}/udisks2/modules
+%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_bcache.so
+%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_btrfs.so
+%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_lvm2.so
+%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_vdo.so
+%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_zram.so
+%dir %{_sysconfdir}/udisks2
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udisks2/udisks2.conf
 /lib/udev/rules.d/80-udisks2.rules
+%{systemdunitdir}/clean-mount-point@.service
+%{systemdunitdir}/udisks2.service
+%{systemdunitdir}/zram-setup@.service
+%{systemdtmpfilesdir}/udisks2.conf
 %{_datadir}/dbus-1/system-services/org.freedesktop.UDisks2.service
-%{_datadir}/polkit-1/actions/org.freedesktop.udisks2.policy
+%{_datadir}/dbus-1/system.d/org.freedesktop.UDisks2.conf
+%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.policy
+%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.bcache.policy
+%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.btrfs.policy
+%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.lvm2.policy
+%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.vdo.policy
+%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.zram.policy
 %{_mandir}/man1/udisksctl.1*
+%{_mandir}/man5/udisks2.conf.5*
 %{_mandir}/man8/udisks.8*
 %{_mandir}/man8/udisksd.8*
 %{_mandir}/man8/umount.udisks2.8*
