@@ -13,7 +13,7 @@ Summary:	Disk Management Service
 Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
 Version:	2.8.4
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/storaged-project/udisks/releases
@@ -44,6 +44,9 @@ BuildRequires:	udev-glib-devel >= 1:165
 %{?with_elogind:BuildConflicts:	systemd-devel}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libatasmart >= 0.17
+Requires:	libblockdev-crypto
+Requires:	libblockdev-fs
+Requires:	libblockdev-loop
 Requires:	systemd-units >= 44
 Requires:	udev-core >= 1:147
 Requires:	udev-glib >= 1:165
@@ -52,6 +55,7 @@ Suggests:	cryptsetup-luks
 Suggests:	dosfstools
 Suggests:	e2fsprogs
 Suggests:	gdisk
+Suggests:	libblockdev-plugins
 Suggests:	losetup
 Suggests:	mount
 Suggests:	nilfs-utils
