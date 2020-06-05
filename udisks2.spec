@@ -3,22 +3,23 @@
 # - lsm: libstoragemgmt >= 1.3.0, libconfig >= 1.3.2
 #
 # Conditional build:
-%bcond_with	elogind		# elogind
+%bcond_with	elogind		# elogind insead of systemd logind support
 %bcond_with	iscsi		# iSCSI support
 %bcond_with	libstoragemgmt	# libstoragemgmt support
+%bcond_without	vdo		# VDO support (deprecated)
 %bcond_without	apidocs		# do not build and package API docs
 %bcond_without	static_libs	# don't build static libraries
 
 Summary:	Disk Management Service
 Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
-Version:	2.8.4
-Release:	2
+Version:	2.9.0
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/storaged-project/udisks/releases
 Source0:	https://github.com/storaged-project/udisks/releases/download/udisks-%{version}/udisks-%{version}.tar.bz2
-# Source0-md5:	ee74a32fe2a7ab3dd3aa9e2283b844ea
+# Source0-md5:	6c9bc503c183c37f45bd8dafa86e5512
 Patch0:		automake-1.12.patch
 URL:		https://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
@@ -30,12 +31,13 @@ BuildRequires:	glib2-devel >= 1:2.50
 BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gtk-doc >= 1.3
 BuildRequires:	libatasmart-devel >= 0.17
-# with btrfs,crypto,fs,kbd,loop,lvm2,mdraid,part,swap,vdo modules
-BuildRequires:	libblockdev-devel >= 2.19
+# with btrfs,crypto,fs,kbd,loop,lvm2,mdraid,part,swap%{?with_vdo:,vdo} modules
+BuildRequires:	libblockdev-devel >= 2.24
 %{?with_libstoragemgmt:BuildRequires:	libconfig-devel >= 1.3.2}
 BuildRequires:	libmount-devel >= 2.30
 %{?with_libstoragemgmt:BuildRequires:	libstoragemgmt-devel >= 1.3.0}
 BuildRequires:	libtool
+BuildRequires:	libuuid-devel >= 2.31
 BuildRequires:	libxslt-progs
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.102
@@ -44,9 +46,9 @@ BuildRequires:	udev-glib-devel >= 1:165
 %{?with_elogind:BuildConflicts:	systemd-devel}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libatasmart >= 0.17
-Requires:	libblockdev-crypto
-Requires:	libblockdev-fs
-Requires:	libblockdev-loop
+Requires:	libblockdev-crypto >= 2.24
+Requires:	libblockdev-fs >= 2.24
+Requires:	libblockdev-loop >= 2.24
 Requires:	systemd-units >= 44
 Requires:	udev-core >= 1:147
 Requires:	udev-glib >= 1:165
@@ -55,7 +57,7 @@ Suggests:	cryptsetup-luks
 Suggests:	dosfstools
 Suggests:	e2fsprogs
 Suggests:	gdisk
-Suggests:	libblockdev-plugins
+Suggests:	libblockdev-plugins >= 2.24
 Suggests:	losetup
 Suggests:	mount
 Suggests:	nilfs-utils
@@ -122,7 +124,7 @@ Summary:	udisks2 API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki udisks2
 Group:		Documentation
 Requires:	gtk-doc-common
-%if "%{_rpmversion}" >= "5"
+%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
 %endif
 
@@ -138,7 +140,7 @@ Summary(pl.UTF-8):	Bashowe uzupełnianie parametrów dla udisks2
 Group:		Applications/Shells
 Requires:	%{name} = %{version}-%{release}
 Requires:	bash-completion >= 2
-%if "%{_rpmversion}" >= "5"
+%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
 %endif
 
@@ -160,10 +162,11 @@ Pakiet ten dostarcza bashowe uzupełnianie parametrów dla udisks2
 %{__autoheader}
 %{__automake}
 %configure \
-	%{__enable_disable apidocs gtk-doc} \
 	--enable-available-modules \
+	%{__enable_disable apidocs gtk-doc} \
 	%{__enable_disable static_libs static} \
 	--disable-silent-rules \
+	%{?with_vdo:--enable-vdo} \
 	--with-html-dir=%{_gtkdocdir} \
 	--with-systemdsystemunitdir=%{systemdunitdir}
 %{__make}
@@ -202,12 +205,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_bcache.so
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_btrfs.so
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_lvm2.so
+%if %{with vdo}
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_vdo.so
+%endif
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_zram.so
 %dir %{_sysconfdir}/udisks2
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udisks2/udisks2.conf
 /lib/udev/rules.d/80-udisks2.rules
-%{systemdunitdir}/clean-mount-point@.service
+#%{systemdunitdir}/clean-mount-point@.service
 %{systemdunitdir}/udisks2.service
 %{systemdunitdir}/zram-setup@.service
 %{systemdtmpfilesdir}/udisks2.conf
@@ -217,7 +222,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.bcache.policy
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.btrfs.policy
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.lvm2.policy
+%if %{with vdo}
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.vdo.policy
+%endif
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.zram.policy
 %{_mandir}/man1/udisksctl.1*
 %{_mandir}/man5/udisks2.conf.5*
@@ -238,6 +245,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gir-1.0/UDisks-2.0.gir
 %{_includedir}/udisks2
 %{_pkgconfigdir}/udisks2.pc
+%{_pkgconfigdir}/udisks2-bcache.pc
+%{_pkgconfigdir}/udisks2-btrfs.pc
+%{_pkgconfigdir}/udisks2-lvm2.pc
+%if %{with vdo}
+%{_pkgconfigdir}/udisks2-vdo.pc
+%endif
+%{_pkgconfigdir}/udisks2-zram.pc
 
 %if %{with static_libs}
 %files static
