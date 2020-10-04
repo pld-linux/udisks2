@@ -13,13 +13,13 @@
 Summary:	Disk Management Service
 Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
-Version:	2.9.0
+Version:	2.9.1
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/storaged-project/udisks/releases
 Source0:	https://github.com/storaged-project/udisks/releases/download/udisks-%{version}/udisks-%{version}.tar.bz2
-# Source0-md5:	6c9bc503c183c37f45bd8dafa86e5512
+# Source0-md5:	aad9c50f4cafccee01a621a6a6665784
 Patch0:		automake-1.12.patch
 URL:		https://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
@@ -212,9 +212,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/udisks2
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udisks2/udisks2.conf
 /lib/udev/rules.d/80-udisks2.rules
+/lib/udev/rules.d/90-udisks2-zram.rules
 #%{systemdunitdir}/clean-mount-point@.service
 %{systemdunitdir}/udisks2.service
-%{systemdunitdir}/zram-setup@.service
+%{systemdunitdir}/udisks2-zram-setup@.service
 %{systemdtmpfilesdir}/udisks2.conf
 %{_datadir}/dbus-1/system-services/org.freedesktop.UDisks2.service
 %{_datadir}/dbus-1/system.d/org.freedesktop.UDisks2.conf
