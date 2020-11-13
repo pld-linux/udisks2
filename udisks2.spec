@@ -42,6 +42,7 @@ BuildRequires:	libuuid-devel >= 2.31
 BuildRequires:	libxslt-progs
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.102
+BuildRequires:	rpmbuild(macros) >= 1.527
 %{!?with_elogind:BuildRequires:	systemd-devel >= 1:209}
 BuildRequires:	udev-glib-devel >= 1:165
 %{?with_elogind:BuildConflicts:	systemd-devel}
