@@ -21,6 +21,7 @@ Group:		Libraries
 Source0:	https://github.com/storaged-project/udisks/releases/download/udisks-%{version}/udisks-%{version}.tar.bz2
 # Source0-md5:	aad9c50f4cafccee01a621a6a6665784
 Patch0:		automake-1.12.patch
+Patch1:		%{name}-housekeeping_interval.patch
 URL:		https://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
@@ -154,6 +155,7 @@ Pakiet ten dostarcza bashowe uzupełnianie parametrów dla udisks2
 %prep
 %setup -q -n udisks-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
