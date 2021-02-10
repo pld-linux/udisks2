@@ -13,13 +13,13 @@
 Summary:	Disk Management Service
 Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
-Version:	2.9.1
+Version:	2.9.2
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/storaged-project/udisks/releases
 Source0:	https://github.com/storaged-project/udisks/releases/download/udisks-%{version}/udisks-%{version}.tar.bz2
-# Source0-md5:	aad9c50f4cafccee01a621a6a6665784
+# Source0-md5:	1f8a9ca98a63ecc9e48ffd08309d0492
 Patch0:		automake-1.12.patch
 Patch1:		%{name}-housekeeping_interval.patch
 URL:		https://www.freedesktop.org/wiki/Software/udisks
