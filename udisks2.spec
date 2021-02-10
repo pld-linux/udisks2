@@ -42,7 +42,7 @@ BuildRequires:	libuuid-devel >= 2.31
 BuildRequires:	libxslt-progs
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.102
-BuildRequires:	rpmbuild(macros) >= 1.527
+BuildRequires:	rpmbuild(macros) >= 1.752
 %{!?with_elogind:BuildRequires:	systemd-devel >= 1:209}
 BuildRequires:	udev-glib-devel >= 1:165
 %{?with_elogind:BuildConflicts:	systemd-devel}
@@ -126,9 +126,7 @@ Summary:	udisks2 API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki udisks2
 Group:		Documentation
 Requires:	gtk-doc-common
-%if "%{_rpmversion}" >= "4.6"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description apidocs
 API documentation for udisks2 library.
@@ -142,9 +140,7 @@ Summary(pl.UTF-8):	Bashowe uzupełnianie parametrów dla udisks2
 Group:		Applications/Shells
 Requires:	%{name} = %{version}-%{release}
 Requires:	bash-completion >= 2
-%if "%{_rpmversion}" >= "4.6"
-BuildArch:	noarch
-%endif
+%{?noarchpackage}
 
 %description -n bash-completion-udisks2
 This package provides bash-completion for udisks2 (udisksctl command).
