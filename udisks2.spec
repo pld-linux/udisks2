@@ -126,7 +126,7 @@ Summary:	udisks2 API documentation
 Summary(pl.UTF-8):	Dokumentacja API biblioteki udisks2
 Group:		Documentation
 Requires:	gtk-doc-common
-%{?noarchpackage}
+BuildArch:	noarch
 
 %description apidocs
 API documentation for udisks2 library.
@@ -140,7 +140,7 @@ Summary(pl.UTF-8):	Bashowe uzupełnianie parametrów dla udisks2
 Group:		Applications/Shells
 Requires:	%{name} = %{version}-%{release}
 Requires:	bash-completion >= 2
-%{?noarchpackage}
+BuildArch:	noarch
 
 %description -n bash-completion-udisks2
 This package provides bash-completion for udisks2 (udisksctl command).
