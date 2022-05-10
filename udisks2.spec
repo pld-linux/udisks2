@@ -1,11 +1,10 @@
 # TODO:
 # - iscsi: libiscsi.h, libiscsi_init in libiscsi
-# - lsm: libstoragemgmt >= 1.3.0, libconfig >= 1.3.2
 #
 # Conditional build:
 %bcond_with	elogind		# elogind insead of systemd logind support
 %bcond_with	iscsi		# iSCSI support
-%bcond_with	libstoragemgmt	# libstoragemgmt support
+%bcond_without	libstoragemgmt	# libstoragemgmt support
 %bcond_without	vdo		# VDO support (deprecated)
 %bcond_without	apidocs		# do not build and package API docs
 %bcond_without	static_libs	# don't build static libraries
@@ -32,8 +31,17 @@ BuildRequires:	glib2-devel >= 1:2.50
 BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gtk-doc >= 1.3
 BuildRequires:	libatasmart-devel >= 0.17
-# with btrfs,crypto,fs,kbd,loop,lvm2,mdraid,part,swap%{?with_vdo:,vdo} modules
-BuildRequires:	libblockdev-devel >= 2.24
+BuildRequires:	libblockdev-devel >= 2.25
+BuildRequires:	libblockdev-btrfs-devel >= 2.25
+BuildRequires:	libblockdev-crypto-devel >= 2.25
+BuildRequires:	libblockdev-fs-devel >= 2.25
+BuildRequires:	libblockdev-kbd-devel >= 2.25
+BuildRequires:	libblockdev-loop-devel >= 2.25
+BuildRequires:	libblockdev-lvm-devel >= 2.25
+BuildRequires:	libblockdev-mdraid-devel >= 2.25
+BuildRequires:	libblockdev-part-devel >= 2.25
+BuildRequires:	libblockdev-swap-devel >= 2.25
+%{?with_vdo:BuildRequires:	libblockdev-vdo-devel >= 2.25}
 %{?with_libstoragemgmt:BuildRequires:	libconfig-devel >= 1.3.2}
 BuildRequires:	libmount-devel >= 2.30
 %{?with_libstoragemgmt:BuildRequires:	libstoragemgmt-devel >= 1.3.0}
@@ -48,9 +56,21 @@ BuildRequires:	udev-glib-devel >= 1:165
 %{?with_elogind:BuildConflicts:	systemd-devel}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libatasmart >= 0.17
-Requires:	libblockdev-crypto >= 2.24
-Requires:	libblockdev-fs >= 2.24
-Requires:	libblockdev-loop >= 2.24
+Requires:	libblockdev >= 2.25
+Requires:	libblockdev-btrfs >= 2.25
+Requires:	libblockdev-crypto >= 2.25
+Requires:	libblockdev-fs >= 2.25
+Requires:	libblockdev-loop >= 2.25
+Requires:	libblockdev-lvm >= 2.25
+Requires:	libblockdev-mdraid >= 2.25
+Requires:	libblockdev-kbd >= 2.25
+Requires:	libblockdev-part >= 2.25
+Requires:	libblockdev-swap >= 2.25
+%{?with_vdo:Requires:	libblockdev-vdo >= 2.25}
+%{?with_libstoragemgmt:Requires:	libconfig >= 1.3.2}
+Requires:	libmount >= 2.30
+%{?with_libstoragemgmt:Requires:	libstoragemgmt-daemon >= 1.3.0}
+Requires:	polkit >= 0.102
 Requires:	systemd-units >= 44
 Requires:	udev-core >= 1:147
 Requires:	udev-glib >= 1:165
@@ -204,12 +224,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_bcache.so
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_btrfs.so
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_lvm2.so
-%if %{with vdo}
-%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_vdo.so
-%endif
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_zram.so
 %dir %{_sysconfdir}/udisks2
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udisks2/udisks2.conf
+%dir %{_sysconfdir}/udisks2/modules.conf.d
 /lib/udev/rules.d/80-udisks2.rules
 /lib/udev/rules.d/90-udisks2-zram.rules
 #%{systemdunitdir}/clean-mount-point@.service
@@ -222,9 +240,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.bcache.policy
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.btrfs.policy
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.lvm2.policy
-%if %{with vdo}
-%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.vdo.policy
-%endif
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.zram.policy
 %{_mandir}/man1/udisksctl.1*
 %{_mandir}/man5/udisks2.conf.5*
@@ -232,6 +247,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/udisksd.8*
 %{_mandir}/man8/umount.udisks2.8*
 %attr(700,root,root) %dir /var/lib/udisks2
+
+%if %{with libstoragemgmt}
+%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_lsm.so
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udisks2/modules.conf.d/udisks2_lsm.conf
+%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.lsm.policy
+%{_mandir}/man5/udisks2_lsm.conf.5*
+%endif
+
+%if %{with vdo}
+%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_vdo.so
+%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.vdo.policy
+%endif
 
 %files libs
 %defattr(644,root,root,755)
@@ -247,6 +274,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/udisks2.pc
 %{_pkgconfigdir}/udisks2-bcache.pc
 %{_pkgconfigdir}/udisks2-btrfs.pc
+%if %{with libstoragemgmt}
+%{_pkgconfigdir}/udisks2-lsm.pc
+%endif
 %{_pkgconfigdir}/udisks2-lvm2.pc
 %if %{with vdo}
 %{_pkgconfigdir}/udisks2-vdo.pc
