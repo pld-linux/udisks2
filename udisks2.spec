@@ -1,9 +1,7 @@
-# TODO:
-# - iscsi: libiscsi.h, libiscsi_init in libiscsi
 #
 # Conditional build:
 %bcond_with	elogind		# elogind insead of systemd logind support
-%bcond_with	iscsi		# iSCSI support
+%bcond_without	iscsi		# iSCSI support
 %bcond_without	libstoragemgmt	# libstoragemgmt support
 %bcond_without	vdo		# VDO support (deprecated)
 %bcond_without	apidocs		# do not build and package API docs
@@ -21,6 +19,7 @@ Source0:	https://github.com/storaged-project/udisks/releases/download/udisks-%{v
 # Source0-md5:	576e057d2654894fab58f0393d105b7b
 Patch0:		automake-1.12.patch
 Patch1:		%{name}-housekeeping_interval.patch
+Patch2:		%{name}-iscsi.patch
 URL:		https://www.freedesktop.org/wiki/Software/udisks
 BuildRequires:	acl-devel
 BuildRequires:	autoconf >= 2.50
@@ -48,6 +47,7 @@ BuildRequires:	libmount-devel >= 2.30
 BuildRequires:	libtool
 BuildRequires:	libuuid-devel >= 2.31
 BuildRequires:	libxslt-progs
+%{?with_iscsi:BuildRequires:	open-iscsi-devel >= 2.1.4-1}
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.102
 BuildRequires:	rpmbuild(macros) >= 1.752
@@ -173,6 +173,7 @@ Pakiet ten dostarcza bashowe uzupełnianie parametrów dla udisks2
 %setup -q -n udisks-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -248,6 +249,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/umount.udisks2.8*
 %attr(700,root,root) %dir /var/lib/udisks2
 
+%if %{with iscsi}
+%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_iscsi.so
+%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.iscsi.policy
+%endif
+
 %if %{with libstoragemgmt}
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_lsm.so
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/udisks2/modules.conf.d/udisks2_lsm.conf
@@ -274,6 +280,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/udisks2.pc
 %{_pkgconfigdir}/udisks2-bcache.pc
 %{_pkgconfigdir}/udisks2-btrfs.pc
+%if %{with iscsi}
+%{_pkgconfigdir}/udisks2-iscsi.pc
+%endif
 %if %{with libstoragemgmt}
 %{_pkgconfigdir}/udisks2-lsm.pc
 %endif

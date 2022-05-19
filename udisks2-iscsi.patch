@@ -1,0 +1,79 @@
+--- udisks-2.9.4/configure.ac.orig	2021-09-29 18:00:31.000000000 +0200
++++ udisks-2.9.4/configure.ac	2022-05-19 06:23:52.571836426 +0200
+@@ -342,13 +342,13 @@ if test "x$enable_iscsi" = "xyes" \
+      -o "x$enable_modules" = "xyes" \
+      -o "x$enable_available_modules" = "xyes"; then
+   # libiscsi.h
+-  AC_CHECK_HEADER([libiscsi.h],
++  AC_CHECK_HEADER([libopeniscsi.h],
+                   [AC_DEFINE(HAVE_ISCSI, 1, [Define if libiscsi from iscsi-initiator-utils is available])
+                    have_iscsi=yes],
+                   [have_iscsi=no])
+   if test "x$have_iscsi" = "xyes"; then
+-    AC_MSG_CHECKING([whether libiscsi.h defines iscsi_err])
+-    AC_TRY_COMPILE([#include <libiscsi.h>],
++    AC_MSG_CHECKING([whether libopeniscsi.h defines iscsi_err])
++    AC_TRY_COMPILE([#include <libopeniscsi.h>],
+                    [int err = ISCSI_SUCCESS;],
+                    [AC_MSG_RESULT([yes])
+                     AC_DEFINE([HAVE_LIBISCSI_ERR], [1], [libiscsi error states])],
+@@ -356,12 +356,12 @@ if test "x$enable_iscsi" = "xyes" \
+   fi
+ 
+   # libiscsi
+-  AC_CHECK_LIB([iscsi],
++  AC_CHECK_LIB([openiscsi],
+                [libiscsi_init],
+-               [ISCSI_LIBS="-liscsi"],
++               [ISCSI_LIBS="-lopeniscsi"],
+                [have_iscsi="no"])
+   if test "x$have_iscsi" = "xyes"; then
+-    AC_CHECK_LIB([iscsi],
++    AC_CHECK_LIB([openiscsi],
+                  [libiscsi_get_session_info_by_id],
+                  [have_libiscsi_session_info="yes"
+                   have_libiscsi_session_info_msg=", with iscsi sessions"
+--- udisks-2.9.4/modules/iscsi/udisksiscsiutil.c.orig	2021-09-29 18:00:31.000000000 +0200
++++ udisks-2.9.4/modules/iscsi/udisksiscsiutil.c	2022-05-19 06:24:31.734957594 +0200
+@@ -20,7 +20,7 @@
+ #include "config.h"
+ 
+ #include <string.h>
+-#include <libiscsi.h>
++#include <libopeniscsi.h>
+ 
+ #include <src/udisksdaemon.h>
+ #include <src/udisksmodulemanager.h>
+--- udisks-2.9.4/modules/iscsi/udiskslinuxiscsisessionobject.c.orig	2021-09-29 18:00:31.000000000 +0200
++++ udisks-2.9.4/modules/iscsi/udiskslinuxiscsisessionobject.c	2022-05-19 06:24:46.198212573 +0200
+@@ -19,7 +19,7 @@
+ 
+ #include "config.h"
+ 
+-#include <libiscsi.h>
++#include <libopeniscsi.h>
+ #include <src/udisksdaemon.h>
+ #include <src/udiskslogging.h>
+ #include <src/udiskslinuxdevice.h>
+--- udisks-2.9.4/modules/iscsi/udiskslinuxmanageriscsiinitiator.c.orig	2021-09-29 18:00:31.000000000 +0200
++++ udisks-2.9.4/modules/iscsi/udiskslinuxmanageriscsiinitiator.c	2022-05-19 06:24:57.854816091 +0200
+@@ -25,7 +25,7 @@
+ 
+ #include <glib/gi18n-lib.h>
+ 
+-#include <libiscsi.h>
++#include <libopeniscsi.h>
+ 
+ #include <src/udisksdaemon.h>
+ #include <src/udisksdaemonutil.h>
+--- udisks-2.9.4/modules/iscsi/udiskslinuxmoduleiscsi.c.orig	2021-09-29 18:00:31.000000000 +0200
++++ udisks-2.9.4/modules/iscsi/udiskslinuxmoduleiscsi.c	2022-05-19 06:25:07.794762241 +0200
+@@ -20,7 +20,7 @@
+ 
+ #include "config.h"
+ 
+-#include <libiscsi.h>
++#include <libopeniscsi.h>
+ 
+ #include <src/udisksdaemon.h>
+ #include <src/udiskslogging.h>
