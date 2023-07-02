@@ -61,6 +61,7 @@ Requires:	libblockdev-crypto >= 3.0
 Requires:	libblockdev-fs >= 3.0
 Requires:	libblockdev-loop >= 3.0
 Requires:	libblockdev-mdraid >= 3.0
+Requires:	libblockdev-nvme >= 3.0
 Requires:	libblockdev-part >= 3.0
 Requires:	libblockdev-swap >= 3.0
 Requires:	libmount >= 2.30
