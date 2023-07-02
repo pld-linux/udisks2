@@ -50,6 +50,7 @@ BuildRequires:	libxslt-progs
 %{?with_iscsi:BuildRequires:	open-iscsi-devel >= 2.1.4-1}
 BuildRequires:	pkgconfig
 BuildRequires:	polkit-devel >= 0.102
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.752
 %{!?with_elogind:BuildRequires:	systemd-devel >= 1:209}
 BuildRequires:	udev-glib-devel >= 1:165
