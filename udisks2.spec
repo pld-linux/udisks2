@@ -3,20 +3,19 @@
 %bcond_with	elogind		# elogind insead of systemd logind support
 %bcond_without	iscsi		# iSCSI support
 %bcond_without	libstoragemgmt	# libstoragemgmt support
-%bcond_without	vdo		# VDO support (deprecated)
 %bcond_without	apidocs		# do not build and package API docs
 %bcond_without	static_libs	# don't build static libraries
 
 Summary:	Disk Management Service
 Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
-Version:	2.9.4
-Release:	2
+Version:	2.10.0
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/storaged-project/udisks/releases
 Source0:	https://github.com/storaged-project/udisks/releases/download/udisks-%{version}/udisks-%{version}.tar.bz2
-# Source0-md5:	576e057d2654894fab58f0393d105b7b
+# Source0-md5:	5b5da772a4537951bf487ee11a510ccc
 Patch0:		automake-1.12.patch
 Patch1:		%{name}-housekeeping_interval.patch
 Patch2:		%{name}-iscsi.patch
@@ -26,21 +25,21 @@ BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.11
 %{?with_elogind:BuildRequires:	elogind-devel >= 219}
 BuildRequires:	gettext-tools >= 0.19.8
-BuildRequires:	glib2-devel >= 1:2.50
+BuildRequires:	glib2-devel >= 1:2.68
 BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gtk-doc >= 1.3
 BuildRequires:	libatasmart-devel >= 0.17
-BuildRequires:	libblockdev-devel >= 2.25
-BuildRequires:	libblockdev-btrfs-devel >= 2.25
-BuildRequires:	libblockdev-crypto-devel >= 2.25
-BuildRequires:	libblockdev-fs-devel >= 2.25
-BuildRequires:	libblockdev-kbd-devel >= 2.25
-BuildRequires:	libblockdev-loop-devel >= 2.25
-BuildRequires:	libblockdev-lvm-devel >= 2.25
-BuildRequires:	libblockdev-mdraid-devel >= 2.25
-BuildRequires:	libblockdev-part-devel >= 2.25
-BuildRequires:	libblockdev-swap-devel >= 2.25
-%{?with_vdo:BuildRequires:	libblockdev-vdo-devel >= 2.25}
+BuildRequires:	libblkid-devel
+BuildRequires:	libblockdev-devel >= 3.0
+BuildRequires:	libblockdev-btrfs-devel >= 3.0
+BuildRequires:	libblockdev-crypto-devel >= 3.0
+BuildRequires:	libblockdev-fs-devel >= 3.0
+BuildRequires:	libblockdev-loop-devel >= 3.0
+BuildRequires:	libblockdev-lvm-devel >= 3.0
+BuildRequires:	libblockdev-mdraid-devel >= 3.0
+BuildRequires:	libblockdev-nvme-devel >= 3.0
+BuildRequires:	libblockdev-part-devel >= 3.0
+BuildRequires:	libblockdev-swap-devel >= 3.0
 %{?with_libstoragemgmt:BuildRequires:	libconfig-devel >= 1.3.2}
 BuildRequires:	libmount-devel >= 2.30
 %{?with_libstoragemgmt:BuildRequires:	libstoragemgmt-devel >= 1.3.0}
@@ -57,13 +56,13 @@ BuildRequires:	udev-glib-devel >= 1:165
 %{?with_elogind:BuildConflicts:	systemd-devel}
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libatasmart >= 0.17
-Requires:	libblockdev >= 2.25
-Requires:	libblockdev-crypto >= 2.25
-Requires:	libblockdev-fs >= 2.25
-Requires:	libblockdev-loop >= 2.25
-Requires:	libblockdev-mdraid >= 2.25
-Requires:	libblockdev-part >= 2.25
-Requires:	libblockdev-swap >= 2.25
+Requires:	libblockdev >= 3.0
+Requires:	libblockdev-crypto >= 3.0
+Requires:	libblockdev-fs >= 3.0
+Requires:	libblockdev-loop >= 3.0
+Requires:	libblockdev-mdraid >= 3.0
+Requires:	libblockdev-part >= 3.0
+Requires:	libblockdev-swap >= 3.0
 Requires:	libmount >= 2.30
 Requires:	polkit >= 0.102
 Requires:	systemd-units >= 44
@@ -83,6 +82,9 @@ Suggests:	parted
 Suggests:	reiserfsprogs
 Suggests:	util-linux
 Suggests:	xfsprogs
+Obsoletes:	udisks2-module-bcache < 2.10.0
+Obsoletes:	udisks2-module-vdo < 2.10.0
+Obsoletes:	udisks2-module-zram < 2.10.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -95,25 +97,12 @@ udisks dostarcza demona, API D-Bus oraz narzędzia linii poleceń do
 zarządzania dyskami i innymi urządzeniami przechowującymi dane. Ten
 pakiet jest przeznaczony dla udisks z serii 2.x.
 
-%package module-bcache
-Summary:	Bcache support module for udisks2
-Summary(pl.UTF-8):	Moduł obsługi Bcache dla udisks2
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	libblockdev-kbd >= 2.25
-
-%description module-bcache
-Bcache support module for udisks2.
-
-%description module-bcache -l pl.UTF-8
-Moduł obsługi Bcache dla udisks2.
-
 %package module-btrfs
 Summary:	BTRFS support module for udisks2
 Summary(pl.UTF-8):	Moduł obsługi BTRFS dla udisks2
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	libblockdev-btrfs >= 2.25
+Requires:	libblockdev-btrfs >= 3.0
 
 %description module-btrfs
 BTRFS support module for udisks2.
@@ -153,7 +142,7 @@ Summary:	LVM2 support module for udisks2
 Summary(pl.UTF-8):	Moduł obsługi LVM2 dla udisks2
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	libblockdev-lvm >= 2.25
+Requires:	libblockdev-lvm >= 3.0
 
 %description module-lvm2
 LVM2 support module for udisks2.
@@ -161,39 +150,12 @@ LVM2 support module for udisks2.
 %description module-lvm2 -l pl.UTF-8
 Moduł obsługi LVM2 dla udisks2.
 
-%package module-vdo
-Summary:	VDO support module for udisks2
-Summary(pl.UTF-8):	Moduł obsługi VDO dla udisks2
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	libblockdev-vdo >= 2.25
-
-%description module-vdo
-VDO support module for udisks2.
-
-%description module-vdo -l pl.UTF-8
-Moduł obsługi VDO dla udisks2.
-
-%package module-zram
-Summary:	ZRAM support module for udisks2
-Summary(pl.UTF-8):	Moduł obsługi ZRAM dla udisks2
-Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	libblockdev-kbd >= 2.25
-Requires:	libblockdev-swap >= 2.25
-
-%description module-zram
-ZRAM support module for udisks2.
-
-%description module-zram -l pl.UTF-8
-Moduł obsługi ZRAM dla udisks2.
-
 %package libs
 Summary:	udisks2 library
 Summary(pl.UTF-8):	Biblioteka udisks2
 License:	LGPL v2+
 Group:		Libraries
-Requires:	glib2 >= 1:2.50
+Requires:	glib2 >= 1:2.68
 
 %description libs
 This package contains udisks2 library, which provides access to the
@@ -209,7 +171,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki udisks2
 License:	LGPL v2+
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.50
+Requires:	glib2-devel >= 1:2.68
 
 %description devel
 Header files for udisks2 library.
@@ -257,6 +219,21 @@ This package provides bash-completion for udisks2 (udisksctl command).
 Pakiet ten dostarcza bashowe uzupełnianie parametrów dla udisks2
 (polecenia udisksctl).
 
+%package -n zsh-completion-udisks2
+Summary:	zsh-completion for udisks2
+Summary(pl.UTF-8):	Uzupełnianie parametrów dla udisks2 w powłoce ZSH
+Group:		Applications/Shells
+Requires:	%{name} = %{version}-%{release}
+Requires:	zsh-completion >= 2
+BuildArch:	noarch
+
+%description -n zsh-completion-udisks2
+This package provides zsh-completion for udisks2 (udisksctl command).
+
+%description -n zsh-completion-udisks2 -l pl.UTF-8
+Pakiet ten dostarcza zshowe uzupełnianie parametrów dla udisks2
+(polecenia udisksctl).
+
 %prep
 %setup -q -n udisks-%{version}
 %patch0 -p1
@@ -274,7 +251,6 @@ Pakiet ten dostarcza bashowe uzupełnianie parametrów dla udisks2
 	%{__enable_disable apidocs gtk-doc} \
 	%{__enable_disable static_libs static} \
 	--disable-silent-rules \
-	%{?with_vdo:--enable-vdo} \
 	--with-html-dir=%{_gtkdocdir} \
 	--with-systemdsystemunitdir=%{systemdunitdir}
 %{__make}
@@ -326,16 +302,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/umount.udisks2.8*
 %attr(700,root,root) %dir /var/lib/udisks2
 
-%if %{with vdo}
-%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_vdo.so
-%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.vdo.policy
-%endif
-
-%files module-bcache
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_bcache.so
-%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.bcache.policy
-
 %files module-btrfs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_btrfs.so
@@ -362,13 +328,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_lvm2.so
 %{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.lvm2.policy
 
-%files module-zram
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/udisks2/modules/libudisks2_zram.so
-/lib/udev/rules.d/90-udisks2-zram.rules
-%{systemdunitdir}/udisks2-zram-setup@.service
-%{_datadir}/polkit-1/actions/org.freedesktop.UDisks2.zram.policy
-
 %files libs
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libudisks2.so.*.*.*
@@ -381,7 +340,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gir-1.0/UDisks-2.0.gir
 %{_includedir}/udisks2
 %{_pkgconfigdir}/udisks2.pc
-%{_pkgconfigdir}/udisks2-bcache.pc
 %{_pkgconfigdir}/udisks2-btrfs.pc
 %if %{with iscsi}
 %{_pkgconfigdir}/udisks2-iscsi.pc
@@ -390,10 +348,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/udisks2-lsm.pc
 %endif
 %{_pkgconfigdir}/udisks2-lvm2.pc
-%if %{with vdo}
-%{_pkgconfigdir}/udisks2-vdo.pc
-%endif
-%{_pkgconfigdir}/udisks2-zram.pc
 
 %if %{with static_libs}
 %files static
@@ -410,3 +364,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n bash-completion-udisks2
 %defattr(644,root,root,755)
 %{bash_compdir}/udisksctl
+
+%files -n zsh-completion-udisks2
+%defattr(644,root,root,755)
+%{zsh_compdir}/_udisks2
