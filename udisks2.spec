@@ -247,7 +247,7 @@ Summary:	bash-completion for udisks2
 Summary(pl.UTF-8):	Bashowe uzupełnianie parametrów dla udisks2
 Group:		Applications/Shells
 Requires:	%{name} = %{version}-%{release}
-Requires:	bash-completion >= 2
+Requires:	bash-completion >= 1:2
 BuildArch:	noarch
 
 %description -n bash-completion-udisks2
