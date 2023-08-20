@@ -10,7 +10,7 @@ Summary:	Disk Management Service
 Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
 Version:	2.10.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/storaged-project/udisks/releases
@@ -225,7 +225,7 @@ Summary:	zsh-completion for udisks2
 Summary(pl.UTF-8):	Uzupełnianie parametrów dla udisks2 w powłoce ZSH
 Group:		Applications/Shells
 Requires:	%{name} = %{version}-%{release}
-Requires:	zsh-completion >= 2
+Requires:	zsh-completions >= 2
 BuildArch:	noarch
 
 %description -n zsh-completion-udisks2
