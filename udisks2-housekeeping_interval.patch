@@ -1,7 +1,6 @@
-diff --color -urN udisks-2.9.1.orig/src/udiskslinuxprovider.c udisks-2.9.1/src/udiskslinuxprovider.c
---- udisks-2.9.1.orig/src/udiskslinuxprovider.c	2020-08-12 16:05:39.000000000 +0200
-+++ udisks-2.9.1/src/udiskslinuxprovider.c	2020-11-13 01:06:57.098257205 +0100
-@@ -720,8 +720,8 @@
+--- udisks-2.11.0/src/udiskslinuxprovider.c.orig	2025-11-06 14:43:45.000000000 +0100
++++ udisks-2.11.0/src/udiskslinuxprovider.c	2026-02-21 20:37:27.252988169 +0100
+@@ -794,8 +794,8 @@ udisks_linux_provider_start (UDisksProvi
    g_list_free_full (udisks_devices, g_object_unref);
    udisks_info ("Initialization complete");
  
@@ -12,8 +11,8 @@ diff --color -urN udisks-2.9.1.orig/src/udiskslinuxprovider.c udisks-2.9.1/src/u
                                                            on_housekeeping_timeout,
                                                            provider);
    /* ... and also do an initial run */
-@@ -1502,7 +1502,7 @@
-   G_UNLOCK (provider_lock);
+@@ -1592,7 +1592,7 @@ housekeeping_thread_func (GTask
+   g_task_return_boolean (task, TRUE);
  }
  
 -/* called from the main thread on start-up and every 10 minutes or so */

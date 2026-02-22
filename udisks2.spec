@@ -9,13 +9,13 @@
 Summary:	Disk Management Service
 Summary(pl.UTF-8):	Usługa zarządzania dyskami
 Name:		udisks2
-Version:	2.10.2
+Version:	2.11.0
 Release:	1
 License:	GPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/storaged-project/udisks/releases
 Source0:	https://github.com/storaged-project/udisks/releases/download/udisks-%{version}/udisks-%{version}.tar.bz2
-# Source0-md5:	ccadfee0fcbb1ceeb563d69e10345386
+# Source0-md5:	36b88512de095e76eec28eafc391e95a
 Patch0:		automake-1.12.patch
 Patch1:		%{name}-housekeeping_interval.patch
 Patch2:		%{name}-iscsi.patch
@@ -28,22 +28,22 @@ BuildRequires:	gettext-tools >= 0.19.8
 BuildRequires:	glib2-devel >= 1:2.68
 BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	gtk-doc >= 1.3
-BuildRequires:	libatasmart-devel >= 0.17
 BuildRequires:	libblkid-devel
-BuildRequires:	libblockdev-devel >= 3.0
-BuildRequires:	libblockdev-btrfs-devel >= 3.0
-BuildRequires:	libblockdev-crypto-devel >= 3.0
-BuildRequires:	libblockdev-fs-devel >= 3.0
-BuildRequires:	libblockdev-loop-devel >= 3.0
-BuildRequires:	libblockdev-lvm-devel >= 3.0
-BuildRequires:	libblockdev-mdraid-devel >= 3.0
-BuildRequires:	libblockdev-nvme-devel >= 3.0
-BuildRequires:	libblockdev-part-devel >= 3.0
-BuildRequires:	libblockdev-swap-devel >= 3.0
+BuildRequires:	libblockdev-devel >= 3.4
+BuildRequires:	libblockdev-btrfs-devel >= 3.4
+BuildRequires:	libblockdev-crypto-devel >= 3.4
+BuildRequires:	libblockdev-fs-devel >= 3.4
+BuildRequires:	libblockdev-loop-devel >= 3.4
+BuildRequires:	libblockdev-lvm-devel >= 3.4
+BuildRequires:	libblockdev-mdraid-devel >= 3.4
+BuildRequires:	libblockdev-nvme-devel >= 3.4
+BuildRequires:	libblockdev-part-devel >= 3.4
+BuildRequires:	libblockdev-smart-devel >= 3.4
+BuildRequires:	libblockdev-swap-devel >= 3.4
 %{?with_libstoragemgmt:BuildRequires:	libconfig-devel >= 1.3.2}
 BuildRequires:	libmount-devel >= 2.30
 %{?with_libstoragemgmt:BuildRequires:	libstoragemgmt-devel >= 1.3.0}
-BuildRequires:	libtool
+BuildRequires:	libtool >= 2:2
 BuildRequires:	libuuid-devel >= 2.31
 BuildRequires:	libxslt-progs
 %{?with_iscsi:BuildRequires:	open-iscsi-devel >= 2.1.4-1}
@@ -52,18 +52,20 @@ BuildRequires:	polkit-devel >= 0.102
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.752
 %{!?with_elogind:BuildRequires:	systemd-devel >= 1:209}
+# when available in PLD
+#BuildRequires:	udev-devel >= 1:257
 BuildRequires:	udev-glib-devel >= 1:165
 %{?with_elogind:BuildConflicts:	systemd-devel}
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	libatasmart >= 0.17
-Requires:	libblockdev >= 3.0
-Requires:	libblockdev-crypto >= 3.0
-Requires:	libblockdev-fs >= 3.0
-Requires:	libblockdev-loop >= 3.0
-Requires:	libblockdev-mdraid >= 3.0
-Requires:	libblockdev-nvme >= 3.0
-Requires:	libblockdev-part >= 3.0
-Requires:	libblockdev-swap >= 3.0
+Requires:	libblockdev >= 3.4
+Requires:	libblockdev-crypto >= 3.4
+Requires:	libblockdev-fs >= 3.4
+Requires:	libblockdev-loop >= 3.4
+Requires:	libblockdev-mdraid >= 3.4
+Requires:	libblockdev-nvme >= 3.4
+Requires:	libblockdev-part >= 3.4
+Requires:	libblockdev-smart >= 3.4
+Requires:	libblockdev-swap >= 3.4
 Requires:	libmount >= 2.30
 Requires:	polkit >= 0.102
 Requires:	systemd-units >= 44
@@ -103,7 +105,7 @@ Summary:	BTRFS support module for udisks2
 Summary(pl.UTF-8):	Moduł obsługi BTRFS dla udisks2
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	libblockdev-btrfs >= 3.0
+Requires:	libblockdev-btrfs >= 3.4
 
 %description module-btrfs
 BTRFS support module for udisks2.
@@ -143,7 +145,7 @@ Summary:	LVM2 support module for udisks2
 Summary(pl.UTF-8):	Moduł obsługi LVM2 dla udisks2
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	libblockdev-lvm >= 3.0
+Requires:	libblockdev-lvm >= 3.4
 
 %description module-lvm2
 LVM2 support module for udisks2.

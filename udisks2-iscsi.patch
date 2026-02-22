@@ -1,6 +1,6 @@
---- udisks-2.9.4/configure.ac.orig	2021-09-29 18:00:31.000000000 +0200
-+++ udisks-2.9.4/configure.ac	2022-05-19 06:23:52.571836426 +0200
-@@ -342,13 +342,13 @@ if test "x$enable_iscsi" = "xyes" \
+--- udisks-2.11.0/configure.ac.orig	2025-11-06 14:43:45.000000000 +0100
++++ udisks-2.11.0/configure.ac	2026-02-21 20:43:17.971088166 +0100
+@@ -322,23 +322,23 @@ if test "x$enable_iscsi" = "xyes" \
       -o "x$enable_modules" = "xyes" \
       -o "x$enable_available_modules" = "xyes"; then
    # libiscsi.h
@@ -11,13 +11,10 @@
                    [have_iscsi=no])
    if test "x$have_iscsi" = "xyes"; then
 -    AC_MSG_CHECKING([whether libiscsi.h defines iscsi_err])
--    AC_TRY_COMPILE([#include <libiscsi.h>],
+-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <libiscsi.h>]], [[int err = ISCSI_SUCCESS;]])],[AC_MSG_RESULT([yes])
 +    AC_MSG_CHECKING([whether libopeniscsi.h defines iscsi_err])
-+    AC_TRY_COMPILE([#include <libopeniscsi.h>],
-                    [int err = ISCSI_SUCCESS;],
-                    [AC_MSG_RESULT([yes])
-                     AC_DEFINE([HAVE_LIBISCSI_ERR], [1], [libiscsi error states])],
-@@ -356,12 +356,12 @@ if test "x$enable_iscsi" = "xyes" \
++    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <libopeniscsi.h>]], [[int err = ISCSI_SUCCESS;]])],[AC_MSG_RESULT([yes])
+                     AC_DEFINE([HAVE_LIBISCSI_ERR], [1], [libiscsi error states])],[AC_MSG_RESULT([no])])
    fi
  
    # libiscsi
